@@ -16,13 +16,30 @@ O erro **0x80070643** no Windows 10 geralmente ocorre durante a instalação de 
 - Abra o **Explorador de Arquivos** e navegue até `C:\Windows\SoftwareDistribution\Download`. Exclua todo o conteúdo dessa pasta.
 - Volte ao "services.msc", clique com o botão direito em **Windows Update** e selecione **Iniciar**.
 
-### 5. Desinstalar o Antivírus Temporariamente
-- Às vezes, softwares de segurança podem interferir na instalação de atualizações. Tente desinstalar temporariamente seu programa antivírus e execute o Windows Update novamente.
-
-### 6. Instalar a Atualização Manualmente
+### 5. Instalar a Atualização Manualmente
 - Se você souber qual atualização está causando o problema, pode baixá-la manualmente do **Catálogo do Microsoft Update** e instalar.
 
-### 7. Utilizar o Comando DISM
+### 6. Utilizar o Comando DISM
 - Execute o **Prompt de Comando como administrador** e digite o seguinte comando: `DISM.exe /Online /Cleanup-image /Restorehealth`. Isso pode ajudar a reparar a imagem do sistema operacional.
 
 Se após seguir estas etapas o problema persistir, pode ser útil considerar a restauração do sistema para um ponto anterior ao início do problema ou até mesmo a reinstalação do Windows como última opção. Lembre-se de fazer backup de seus arquivos antes de tomar medidas mais drásticas.
+
+
+[update as 10:45hs]
+
+### 7. Redefina os Componentes do Windows Update
+Às vezes, os componentes do Windows Update podem se corromper, necessitando de uma redefinição manual.
+
+Execute os seguintes comandos em um **Prompt de Comando** com privilégios administrativos para parar os serviços do Windows Update, renomear as pastas de distribuição de software e catroot2 (onde o Windows armazena arquivos temporários de atualização) e, em seguida, reiniciar os serviços:
+
+```plaintext
+net stop wuauserv
+net stop cryptSvc
+net stop bits
+net stop msiserver
+ren C:\Windows\SoftwareDistribution SoftwareDistribution.old
+ren C:\Windows\System32\catroot2 catroot2.old
+net start wuauserv
+net start cryptSvc
+net start bits
+net start msiserver
